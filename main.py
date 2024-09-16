@@ -135,8 +135,10 @@ while salir == False:
         opc = int(input("Ingrese la opción: \n 1. Ver portafolio \n 2. Comprar acción \n 3. Ver información de un ticker \n 4. Vender acción \n 5. Ver diferencia \n 6. Salir\n"))
         match opc:
             case 1:
+                # Ver portafolio
                 print("Tu información: \n",cargar_portafolio(),"\n")
             case 2:
+                # Comprar acción
                 while True:
                     ticker = input("Ingrese el ticker de la acción: \n")
                     if obtener_precio_actual(ticker) is not None:
@@ -149,16 +151,25 @@ while salir == False:
                 comprar_accion(ticker.upper(), cantidad)
 
             case 3:
+                # Información de un ticker
                 ticker = input("Ver información de un ticker: \n")
                 print("Información del ticker: \n", obtener_informacion_ticker(ticker.upper()))
                 print("\n")
             case 4:
+                # Vender acción
                 ticker = input("Ingrese el ticker de la acción: \n")
                 cantidad = int(input("Ingrese la cantidad de acciones: \n")) 
                 vender_accion(ticker.upper(),cantidad)
             case 5:
+                # Ver diferencia
                 ticker = input("Ingrese el ticker de la acción: \n")
                 print(ver_diferencia(ticker.upper()))
+                opc_compra = input(f"Quiere comprar acciones del ticker: {ticker.upper()}\n")
+                if opc_compra == "si":
+                    cantidad = int(input("Ingrese la cantidad de acciones: \n"))
+                    comprar_accion(ticker.upper(), cantidad)
+                else:
+                    print("No se compraron acciones")
                 print("\n")
             case _:
                 salir = True
