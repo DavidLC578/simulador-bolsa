@@ -175,7 +175,7 @@ while salir == False:
                     cantidad = int(input("Ingrese la cantidad de acciones: \n"))
                     vender_accion(ticker.upper(), cantidad)
                 else:
-                    print("No se compraron acciones")
+                    print("No se vendieron acciones")
                 print("\n")
             case _:
                 salir = True
