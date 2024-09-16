@@ -79,28 +79,31 @@ def vender_accion(ticker, cantidad):
         return False
     
 def ver_diferencia(ticker):
-    portafolio = cargar_portafolio()
-    precio_total_portafolio = portafolio["acciones"][ticker]["precio_total"]
-    precio_actual_portafolio = portafolio["acciones"][ticker]["precio_unitario"]
-    precio = obtener_precio_actual(ticker)
-    precio_total_mercado = precio * portafolio["acciones"][ticker]["cantidad"]
+    try:
+        portafolio = cargar_portafolio()
+        precio_total_portafolio = portafolio["acciones"][ticker]["precio_total"]
+        precio_actual_portafolio = portafolio["acciones"][ticker]["precio_unitario"]
+        precio = obtener_precio_actual(ticker)
+        precio_total_mercado = precio * portafolio["acciones"][ticker]["cantidad"]
 
-    print("Valor actual: ",round(precio,2))
-    print("Valor total en mercado: ",round(precio_total_mercado,2),"\n")
-    print("Valor actual en portafolio: ",round(precio_actual_portafolio,2))
-    print("Valor total en portafolio: ",round(precio_total_portafolio,2))
-    
-    if precio_total_portafolio > precio_total_mercado:
-        diferencia = precio_total_portafolio - precio_total_mercado
-        print("Valor total: ",round(precio_total_portafolio - diferencia,2))
-        return "Pérdida: "+str(round(diferencia,2))
-    
-    elif precio_total_portafolio == precio_total_mercado:
-        return "No hay ganancia ni pérdida"
-    else:
-        diferencia = precio_total_portafolio - precio_total_mercado
-        print("Valor total: ",round(precio_total_portafolio + diferencia,2))
-        return "Ganancia: "+str(round(diferencia,2))
+        print("Valor actual: ",round(precio,2))
+        print("Valor total en mercado: ",round(precio_total_mercado,2),"\n")
+        print("Valor actual en portafolio: ",round(precio_actual_portafolio,2))
+        print("Valor total en portafolio: ",round(precio_total_portafolio,2))
+        
+        if precio_total_portafolio > precio_total_mercado:
+            diferencia = precio_total_portafolio - precio_total_mercado
+            print("Valor total: ",round(precio_total_portafolio - diferencia,2))
+            return "Pérdida: "+str(round(diferencia,2))
+        
+        elif precio_total_portafolio == precio_total_mercado:
+            return "No hay ganancia ni pérdida"
+        else:
+            diferencia = precio_total_portafolio - precio_total_mercado
+            print("Valor total: ",round(precio_total_portafolio + diferencia,2))
+            return "Ganancia: "+str(round(diferencia,2))
+    except KeyError:
+        return "Ticker inválido"
 
         
     
