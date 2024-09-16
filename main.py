@@ -1,6 +1,7 @@
 import yfinance as yf
 import json
 
+# Función para obtener el precio actual de un ticker desde Yahoo Finance
 def obtener_precio_actual(ticker):
     try:
         stock = yf.Ticker(ticker)
@@ -13,18 +14,22 @@ def obtener_precio_actual(ticker):
         print(f"${ticker}: possibly delisted; no price data found (period=1d) (Yahoo error = \"{e}\")")
         return None
 
+# Función para obtener información de un ticker desde Yahoo Finance
 def obtener_informacion_ticker(ticker):
     stock = yf.Ticker(ticker)
     return stock.history(period='5d')
 
-
+# Función para guardar el portafolio en el archivo JSON
 def guardar_portafolio(portafolio):
     with open("portafolio.json", "w") as archivo:
         json.dump(portafolio, archivo, indent=4)
+
+# Función para cargar el portafolio desde el archivo JSON
 def cargar_portafolio():
     with open("portafolio.json", "r") as archivo:
         return json.load(archivo)
 
+# Función para crear el portafolio si no existe
 def crear_portafolio():
   try:
     with open("portafolio.json", "r") as archivo:
@@ -39,7 +44,7 @@ def crear_portafolio():
     with open("portafolio.json", "w") as archivo:
       json.dump(portafolio_basico, archivo, indent=4)
 
-
+# Función para comprar acciones
 def comprar_accion(ticker, cantidad):
     
     portafolio = cargar_portafolio()
@@ -71,7 +76,7 @@ def comprar_accion(ticker, cantidad):
     else:
         return "Fondos insuficientes"
     
-
+# Función para vender acciones
 def vender_accion(ticker, cantidad):
     portafolio = cargar_portafolio()
     
@@ -97,6 +102,7 @@ def vender_accion(ticker, cantidad):
         print("No hay acciones disponibles")
         return False
     
+# Función para ver la diferencia entre el valor actual y el valor total en el mercado
 def ver_diferencia(ticker):
     try:
         portafolio = cargar_portafolio()
