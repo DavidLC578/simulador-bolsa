@@ -2,8 +2,17 @@ import yfinance as yf
 import json
 
 def obtener_precio_actual(ticker):
-    stock = yf.Ticker(ticker)
-    return stock.history(period='1d')['Close'].iloc[0]
+    try:
+        stock = yf.Ticker(ticker)
+        historial = stock.history(period='1d')
+        if historial.empty:
+            return None  # Devolver None si el DataFrame está vacío
+        else:
+            return historial['Close'].iloc[0]
+    except Exception as e:
+        print(f"${ticker}: possibly delisted; no price data found (period=1d) (Yahoo error = \"{e}\")")
+        return None
+
 def obtener_informacion_ticker(ticker):
     stock = yf.Ticker(ticker)
     return stock.history(period='5d')
@@ -36,6 +45,11 @@ def comprar_accion(ticker, cantidad):
     portafolio = cargar_portafolio()
     
     precio = obtener_precio_actual(ticker)
+    if precio is not None:
+        print("Información del ticker: \n", round(precio,2))
+    else:
+        return "No se encontró información del precio para el ticker:", ticker
+
     costo_total = precio * cantidad
     if portafolio["balance"] >= costo_total:
         if ticker in portafolio["acciones"]:
@@ -45,23 +59,28 @@ def comprar_accion(ticker, cantidad):
 
             guardar_portafolio(portafolio)
 
-            return True
+            return "Compra realizada"
         else:
             portafolio["acciones"][ticker] = {"cantidad": cantidad, "precio_unitario": round(precio,2), "precio_total": round(costo_total,2)}
             portafolio["balance"] = round(float(portafolio["balance"] - costo_total),2)
 
             guardar_portafolio(portafolio)
 
-            return True
+            return "Compra realizada"
 
     else:
-        print("Fondos insuficientes")
-        return False
+        return "Fondos insuficientes"
+    
 
 def vender_accion(ticker, cantidad):
     portafolio = cargar_portafolio()
     
     precio = obtener_precio_actual(ticker)
+    if precio is not None:
+        print("Información del ticker: \n", round(precio,2))
+    else:
+        return "No se encontró información del precio para el ticker:", ticker
+
     costo_total = precio * cantidad
     if portafolio["acciones"][ticker]:
         portafolio["acciones"][ticker]["cantidad"] -= cantidad
@@ -99,7 +118,7 @@ def ver_diferencia(ticker):
         elif precio_total_portafolio == precio_total_mercado:
             return "No hay ganancia ni pérdida"
         else:
-            diferencia = precio_total_portafolio - precio_total_mercado
+            diferencia = precio_total_mercado - precio_total_portafolio
             print("Valor total: ",round(precio_total_portafolio + diferencia,2))
             return "Ganancia: "+str(round(diferencia,2))
     except KeyError:
@@ -118,10 +137,17 @@ while salir == False:
             case 1:
                 print("Tu información: \n",cargar_portafolio(),"\n")
             case 2:
-                ticker = input("Ingrese el ticker de la acción: \n")
+                while True:
+                    ticker = input("Ingrese el ticker de la acción: \n")
+                    if obtener_precio_actual(ticker) is not None:
+                        break
+                    else:
+                        print("Ticker inválido")
+
                 print("Información del ticker: \n", round(obtener_precio_actual(ticker),2))
                 cantidad = int(input("Ingrese la cantidad de acciones: \n"))
                 comprar_accion(ticker.upper(), cantidad)
+
             case 3:
                 ticker = input("Ver información de un ticker: \n")
                 print("Información del ticker: \n", obtener_informacion_ticker(ticker.upper()))
