@@ -60,7 +60,7 @@ def comprar_accion(ticker, cantidad):
         if ticker in portafolio["acciones"]:
             portafolio["acciones"][ticker]["cantidad"] += cantidad
             portafolio["acciones"][ticker]["precio_total"] = portafolio["acciones"][ticker]["precio_total"] + costo_total
-            portafolio["balance"] -= costo_total
+            portafolio["balance"] -= round(costo_total,2)
 
             guardar_portafolio(portafolio)
 
@@ -170,10 +170,10 @@ while salir == False:
                 # Ver diferencia
                 ticker = input("Ingrese el ticker de la acción: \n")
                 print(ver_diferencia(ticker.upper()))
-                opc_compra = input(f"Quiere comprar acciones del ticker: {ticker.upper()}\n")
+                opc_compra = input(f"Quiere vender acciones del ticker: {ticker.upper()}\n")
                 if opc_compra == "si":
                     cantidad = int(input("Ingrese la cantidad de acciones: \n"))
-                    comprar_accion(ticker.upper(), cantidad)
+                    vender_accion(ticker.upper(), cantidad)
                 else:
                     print("No se compraron acciones")
                 print("\n")
